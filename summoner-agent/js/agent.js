@@ -14,7 +14,10 @@ function initSocketConnection(){
 	socket.on('connect',function(){
 		console.log('connected');
 
-		socket.emit('register',1);
+		var guid=localStorage.guid || Math.uuid(8, 16);
+		localStorage.guid=guid;
+
+		socket.emit('register',guid);
 
 		socket.on('job:arrive', function (job) {
 			console.log('job:arrive');

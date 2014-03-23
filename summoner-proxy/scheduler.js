@@ -19,7 +19,7 @@ exports.addJob=function(options){
 			body:req.body
 		}
 	}
-	console.log('apply job: %s',JSON.stringify(job));
+	//console.log('apply job: %s',JSON.stringify(job));
 	workers.sendJob(job);
 
 	setTimeout(function(){
@@ -37,8 +37,8 @@ exports.addJob=function(options){
 }
 
 var jobDone=function(result){
-	console.log('jobdone:');
-	console.log(result);
+	//console.log('jobdone:');
+	//console.log(result);
 	var jobId=result.jobId;
 	jobs[jobId] && jobs[jobId](result.response) && delete jobs[jobId];
 } 
