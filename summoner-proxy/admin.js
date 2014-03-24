@@ -18,7 +18,7 @@ adminApp.get('/',function (req,res){
 });
 
 adminApp.get('/api/workers',function(req,res){
-    res.json(require('./workers').getWorkers());
+    res.json(workers.getWorkers());
 })
 
 exports.startOnPort=function(port){
