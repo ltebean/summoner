@@ -62,7 +62,7 @@ adminApp.configure(function() {
 });
 
 var adminServer = http.createServer(adminApp);
-adminServer.listen(3000);
+adminServer.listen(9001);
 
 adminApp.get('/',function (req,res){
     res.sendfile(__dirname+'/public/index.html')
