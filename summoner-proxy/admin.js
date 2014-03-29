@@ -1,6 +1,5 @@
 var express = require('express');
 var http = require('http');
-var workers = require('./lib/workers');
 
 //admin server
 var adminApp = express();
@@ -18,7 +17,7 @@ adminApp.get('/',function (req,res){
 });
 
 adminApp.get('/api/workers',function(req,res){
-    res.json(workers.getWorkers());
+    // res.json(workers.getWorkers());
 })
 
 exports.startOnPort=function(port){

@@ -1,49 +1,61 @@
-var workers = require('./workers');
-var logger = require('../lib/logger.js');
+var Worker = require('../lib/worker');
+var Job = require('../lib/Job');
+var logger = require('../lib/logger');
 
-var jobs = {} //jobId:cb
+var jobs = {} //jobId: job
 
-exports.addJob = function(options) {
-	var req = options.req;
-	var timeout = options.timeout || 5000;
+var workers = {} // workerId: worker
 
-	var jobId = req.url + '@' + Date.parse(new Date());
+exports.registerWorker = function(worker) {
+	workers[worker.id] = worker;
+	worker.on('done', function(result) {
+		//fetch the job by id
+		var jobId = result.jobId
+		var job = jobs[jobId];
+		if (!job) {
+			return;
+		}
+		job.success(result.response);
+		jobs[jobId] && delete jobs[jobId];
+	});
+	logger.info('worker registered: %s',worker.id);
+}
 
-	jobs[jobId] = options.done;
+exports.removeWorker = function(worker) {
+	delete workers[worker.id];
+	logger.info('worker removed: %s',worker.id);
+}
 
-	var job = {
-		jobId: jobId,
-		request: {
-			url: req.url,
-			method: req.method,
-			headers: req.headers,
-			body: req.body
+exports.scheduleJob = function(job) {
+	// register job with jobId
+	var jobId = job.data.jobId
+	jobs[jobId] = job;
+	// fetch a worker to do the job
+	var worker = fetch_random(workers);
+	if(!worker){
+		job.fail('no worker');
+		return;
+	}
+	worker.doJob(job);
+	// in case the worker fails
+	setTimeout(function(){
+		var job= jobs[jobId]
+		if(!job){
+			return;
+		}
+		job.fail('timeout');
+	},2000);
+
+	logger.debug('current jobs: ' + Object.keys(jobs));
+}
+
+function fetch_random(obj) {
+	var temp_key, keys = [];
+	for (temp_key in obj) {
+		if (obj.hasOwnProperty(temp_key)) {
+			keys.push(temp_key);
 		}
 	}
-	//console.log('apply job: %s',JSON.stringify(job));
-	workers.sendJob(job);
-
-	setTimeout(function() {
-		if (jobs[jobId]) {
-			jobDone({
-				jobId: jobId,
-				response: {
-					code: 503,
-					headers: {},
-					body: '',
-				}
-			});
-		}
-		logger.info('job timeout: ' + job.jobId)
-	}, timeout);
-
+	var key = keys[Math.floor(Math.random() * keys.length)];
+	return obj[key]
 }
-
-var jobDone = function(result) {
-	//console.log('jobdone:');
-	//console.log(result);
-	var jobId = result.jobId;
-	jobs[jobId] && jobs[jobId](result.response) && delete jobs[jobId];
-}
-
-exports.jobDone = jobDone;
