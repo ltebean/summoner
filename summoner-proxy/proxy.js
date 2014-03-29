@@ -9,10 +9,10 @@ var Job = require('./lib/job');
 var proxyApp = express();
 proxyApp.configure(function() {
     proxyApp.use(function handleProxy(req, res, next) {
-        var job= new Job(req);
-        job.on('success',function(response){
+        var job = new Job(req);
+        job.on('success', function(response) {
             return res.send(response.code, response.body);
-        }).on('fail',function(cause){
+        }).on('fail', function(cause) {
             return res.send(500, cause);
         })
         scheduler.scheduleJob(job);
@@ -37,15 +37,15 @@ io.sockets.on('connection', function(socket) {
     socket.on('register', function(id) {
         worker = new Worker(id);
         scheduler.registerWorker(worker);
-        worker.on('job',function(job){
+        worker.on('job', function(job) {
             logger.info('send job: %s', job.jobId)
             //console.log(job);
-            socket.emit('job:arrive', job); 
+            socket.emit('job:arrive', job);
         })
     });
 
     socket.on('job:done', function(result) {
-        logger.info('job done: %s - %d', result.jobId,result.response.code);
+        logger.info('job done: %s - %d', result.jobId, result.response.code);
         worker.jobDone(result);
     })
 

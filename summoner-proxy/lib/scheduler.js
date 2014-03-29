@@ -18,12 +18,12 @@ exports.registerWorker = function(worker) {
 		job.success(result.response);
 		jobs[jobId] && delete jobs[jobId];
 	});
-	logger.info('worker registered: %s',worker.id);
+	logger.info('worker registered: %s', worker.id);
 }
 
 exports.removeWorker = function(worker) {
 	delete workers[worker.id];
-	logger.info('worker removed: %s',worker.id);
+	logger.info('worker removed: %s', worker.id);
 }
 
 exports.scheduleJob = function(job) {
@@ -32,19 +32,19 @@ exports.scheduleJob = function(job) {
 	jobs[jobId] = job;
 	// fetch a worker to do the job
 	var worker = fetch_random(workers);
-	if(!worker){
+	if (!worker) {
 		job.fail('no worker');
 		return;
 	}
 	worker.doJob(job);
 	// in case the worker fails
-	setTimeout(function(){
-		var job= jobs[jobId]
-		if(!job){
+	setTimeout(function() {
+		var job = jobs[jobId]
+		if (!job) {
 			return;
 		}
 		job.fail('timeout');
-	},2000);
+	}, 2000);
 
 	logger.debug('current jobs: ' + Object.keys(jobs));
 }

@@ -2,9 +2,9 @@ var util = require("util");
 var events = require("events");
 
 function Job(req) {
-	this.data={
-		jobId :req.url + '@' + Date.parse(new Date()),
-		request : {
+	this.data = {
+		jobId: req.url + '@' + Date.parse(new Date()),
+		request: {
 			url: req.url,
 			method: req.method,
 			headers: req.headers,
