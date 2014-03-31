@@ -26,6 +26,10 @@ exports.removeWorker = function(worker) {
 	logger.info('worker removed: %s', worker.id);
 }
 
+exports.getAllWorkers = function(){
+	return Object.keys(workers);
+}
+
 exports.scheduleJob = function(job) {
 	// register job with jobId
 	var jobId = job.data.jobId

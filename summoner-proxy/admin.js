@@ -1,5 +1,7 @@
 var express = require('express');
 var http = require('http');
+var scheduler = require('./lib/scheduler');
+
 
 //admin server
 var adminApp = express();
@@ -17,7 +19,7 @@ adminApp.get('/',function (req,res){
 });
 
 adminApp.get('/api/workers',function(req,res){
-    // res.json(workers.getWorkers());
+     res.json(scheduler.getAllWorkers());
 })
 
 exports.startOnPort=function(port){
