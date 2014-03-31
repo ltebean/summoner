@@ -1,5 +1,5 @@
 var Worker = require('../lib/worker');
-var Job = require('../lib/Job');
+var Job = require('../lib/job');
 var logger = require('../lib/logger');
 
 var jobs = {} //jobId: job
