@@ -1,5 +1,5 @@
-var util = require("util");
-var events = require("events");
+var util = require('util');
+var events = require('events');
 
 function Job(req) {
 	this.data = {

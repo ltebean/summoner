@@ -9,7 +9,7 @@ initSocketConnection();
 
 function initSocketConnection(){
 
-	var socket = io.connect('http://localhost:9000');
+	var socket = io.connect('http://192.168.9.49:9000');
 
 	socket.on('connect',function(){
 		console.log('connected');
